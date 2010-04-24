@@ -23,11 +23,12 @@ namespace LevelOne
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Dictionary<Vector2, Island> _islands;
         private Hero _hero;
+        private IslandMap _islandMap;
 
         private Texture2D _islandTexture;
         private Texture2D _heroTexture;
+
         private bool _newGame = true;
         private bool _gameActive;
 
@@ -84,50 +85,19 @@ namespace LevelOne
 
             if(_gameActive)
             {
-                _hero.Velocity = new Vector2(0.0f);
-                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Up))
-                {
-                    _hero.Velocity += new Vector2(0.0f, -Hero.Speed);
-                } else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Down))
-                {
-                    _hero.Velocity += new Vector2(0.0f, Hero.Speed);
-                }
-
-                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Left))
-                {
-                    _hero.Velocity += new Vector2(-Hero.Speed, 0.0f);
-                }
-                else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Right))
-                {
-                    _hero.Velocity += new Vector2(Hero.Speed, 0.0f);
-                }
-
-                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Space))
-                {
-                    Parallel.ForEach(_islands.Values, island => {
-                          if(_hero.Rect.Intersects(island.Rect))
-                          {
-                              island.Status = Status.Guiding;
-                          }
-                      });
-                }
-
                 _hero.Update(gameTime);
-                Parallel.ForEach(_islands.Values, island => island.Update(gameTime));
+
+                _islandMap.Update(gameTime, _hero);
             }
 
 
             if(_newGame)
             {
-                var islands = new List<Island>();
                 var random = new Random();
-
-                Parallel.For(1, 5, x => Parallel.For(1, 5, y => islands.Add(new Island(new Vector2(x, y), random, _islandTexture))));
-
-                _islands = islands.ToDictionary(island => island.Location);
+                _islandMap = new IslandMap(_islandTexture);
                 _hero = new Hero
                             {
-                                Postion = _islands.TakeRandom(random).Value.Postion,
+                                Postion = _islandMap.Islands.TakeRandom(random).Value.Postion,
                                 Texture = _heroTexture,
                                 Ratio = new Vector2(0.6f)
                             };
@@ -150,11 +120,7 @@ namespace LevelOne
 
             _spriteBatch.Begin();
 
-            foreach (var island in _islands.Values)
-            {
-                island.Draw(_spriteBatch, gameTime);
-            }
-
+            _islandMap.Draw(_spriteBatch, gameTime);
             _hero.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();

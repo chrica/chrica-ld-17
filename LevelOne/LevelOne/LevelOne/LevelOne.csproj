@@ -95,6 +95,7 @@
     <Compile Include="Core\RandomHelper.cs" />
     <Compile Include="Core\Sprite.cs" />
     <Compile Include="Islands\Hero.cs" />
+    <Compile Include="Islands\IslandMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="LevelOne.cs" />
