@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using LevelOne.Rules;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -17,14 +19,16 @@ namespace LevelOne
     /// </summary>
     public class LevelOne : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        private Texture2D dude;
-        private SpriteFont font;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        private Dictionary<Vector2, Island> _islands;
+        private Texture2D _islandTexture;
+        private bool _newGame = true;
 
         public LevelOne()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -36,8 +40,6 @@ namespace LevelOne
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -48,12 +50,9 @@ namespace LevelOne
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            dude = Content.Load<Texture2D>(@"dude");
-            font = Content.Load<SpriteFont>(@"courier");
-
-            // TODO: use this.Content to load your game content here
+            _islandTexture = Content.Load<Texture2D>(@"island");
         }
 
         /// <summary>
@@ -76,7 +75,27 @@ namespace LevelOne
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            if(_newGame)
+            {
+                var islands = new List<Island>();
+                var random = new Random();
+
+                Parallel.For(1, 5, x => {
+                    Parallel.For(1, 5, y => {
+                        var island = new Island { Location = new Vector2(x, y) };
+                        island.Postion = island.Location * new Vector2(150.0f, 100.0f);
+                        island.Effects = random.Next(10) % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                        island.Ratio = new Vector2(random.Next(30, 50) / 100.0f, random.Next(40, 50) / 100.0f);
+                        island.Texture = _islandTexture;
+                        islands.Add(island);
+                    });
+                });
+
+                _islands = islands.ToDictionary(island => island.Location);
+
+                _newGame = false;
+            }
+
 
             base.Update(gameTime);
         }
@@ -89,11 +108,14 @@ namespace LevelOne
         {
             GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin();
+            _spriteBatch.Begin();
 
+            foreach (var island in _islands.Values)
+            {
+                island.Draw(_spriteBatch, gameTime);
+            }
 
-
-            spriteBatch.End();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
