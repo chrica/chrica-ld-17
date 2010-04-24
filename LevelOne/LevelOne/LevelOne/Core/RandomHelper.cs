@@ -12,6 +12,11 @@ namespace LevelOne.Core
             return random.Next(10)%2 == 0;
         }
 
+        public static float NextRatio(this Random random, int dividend)
+        {
+            return random.Next(Math.Min(dividend, 100), 100)/100.0f;
+        }
+
         public static T TakeRandom<T>(this IEnumerable<T> enumerable, Random random)
         {
             return enumerable.Skip(random.Next(0, enumerable.Count())).First();

@@ -11,6 +11,8 @@ namespace LevelOne.Islands
 
     public class Island : Sprite
     {
+        public static readonly Vector2 IslandSpace = new Vector2(200, 155);
+
         public Vector2 Location { get; set; }
         public Status Status { get; set; }
         public IList<Curse> Curses { get; set; }
@@ -19,9 +21,8 @@ namespace LevelOne.Islands
         {
             Location = location;
 
-            Postion = Location * new Vector2(150.0f, 100.0f);
             Effects = random.NextBool() ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Ratio = new Vector2(random.Next(30, 50) / 100.0f, random.Next(40, 50) / 100.0f);
+            Ratio = new Vector2(random.NextRatio(60) * (IslandSpace.X / texture.Width), random.NextRatio(60) * (IslandSpace.Y / texture.Width));
             Texture = texture;
 
             Status = Status.Normal;
@@ -32,7 +33,7 @@ namespace LevelOne.Islands
         {
             if(Status == Status.Guiding)
             {
-                Ratio = new Vector2(0.25f);
+                Ratio = new Vector2(0.15f);
             }
         }
     }

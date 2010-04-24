@@ -35,6 +35,11 @@ namespace LevelOne
         public LevelOne()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 1024;
+            #if !DEBUG
+            graphics.IsFullScreen = true;
+            #endif
             Content.RootDirectory = "Content";
         }
 
@@ -79,33 +84,28 @@ namespace LevelOne
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-
-            if(_gameActive)
-            {
-                _hero.Update(gameTime);
-
-                _islandMap.Update(gameTime, _hero);
-            }
-
-
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
+                Exit();
+            
             if(_newGame)
             {
                 var random = new Random();
-                _islandMap = new IslandMap(_islandTexture);
-                _hero = new Hero
-                            {
-                                Postion = _islandMap.Islands.TakeRandom(random).Value.Postion,
-                                Texture = _heroTexture,
-                                Ratio = new Vector2(0.6f)
-                            };
+
+                _islandMap = new IslandMap(_islandTexture, new Vector2(5.0f));
+                _islandMap.Postion = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height) / 2.0f - _islandMap.Dimensions / 2.0f;
+
+                _hero = new Hero(_heroTexture) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion };
 
                 _newGame = false;
                 _gameActive = true;
             }
 
+
+            if(_gameActive)
+            {
+                _hero.Update(gameTime);
+                _islandMap.Update(gameTime, _hero);
+            }
 
             base.Update(gameTime);
         }

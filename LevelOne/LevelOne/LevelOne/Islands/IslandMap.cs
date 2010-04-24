@@ -12,17 +12,39 @@ namespace LevelOne.Islands
 {
     public class IslandMap
     {
-        public Vector2 Postion { get; set; }
-        public Dictionary<Vector2, Island> Islands { get; set; }
+        private Vector2 _postion;
+        public Vector2 Postion {
+            get
+            {
+                return _postion;
+            }
+            set
+            {
+                _postion = value;
+                Parallel.ForEach(Islands.Values, island => island.Postion = _postion + (island.Location - Vector2.One) * Island.IslandSpace);
+            }
+}
+        public Vector2 BoardSize { get; private set; }
+        public Dictionary<Vector2, Island> Islands { get; private set; }
 
-        public IslandMap(Texture2D islandTexture)
+        public Vector2 Dimensions
         {
-            var islands = new List<Island>();
+            get
+            {
+                return BoardSize * Island.IslandSpace;
+            }
+        }
+
+        public IslandMap(Texture2D islandTexture, Vector2 boardSize)
+        {
+            BoardSize = boardSize;
+
+            Islands = new Dictionary<Vector2, Island>();
             var random = new Random();
-
-            Parallel.For(1, 5, x => Parallel.For(1, 5, y => islands.Add(new Island(new Vector2(x, y), random, islandTexture))));
-
-            Islands = islands.ToDictionary(island => island.Location);
+            for (int x = 1; x < (int)BoardSize.X + 1; x++) for (int y = 1; y < (int)BoardSize.Y + 1; y++)
+            {
+                Islands[new Vector2(x, y)] = new Island(new Vector2(x, y), random, islandTexture);
+            }
         }
 
         public void Update(GameTime gameTime, Hero hero)
@@ -47,7 +69,6 @@ namespace LevelOne.Islands
             {
                 island.Draw(spriteBatch, gameTime);
             }
-
         }
     }
 }

@@ -50,7 +50,7 @@ namespace LevelOne.Core
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Postion - Dimensions / 2.0f, null, Color.White, 0, Vector2.Zero, Ratio, Effects, 0);
+            spriteBatch.Draw(Texture, Postion, null, Color.White, 0, Vector2.Zero, Ratio, Effects, 0);
         }
     }
 }

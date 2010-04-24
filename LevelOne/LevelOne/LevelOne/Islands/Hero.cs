@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LevelOne.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace LevelOne.Islands
@@ -12,6 +13,12 @@ namespace LevelOne.Islands
     public class Hero : Sprite
     {
         public const float Speed = 3.0f;
+
+        public Hero(Texture2D texture)
+        {
+            Texture = texture;
+            Ratio = new Vector2(0.1f);
+        }
 
         public override void Update(GameTime gameTime)
         {

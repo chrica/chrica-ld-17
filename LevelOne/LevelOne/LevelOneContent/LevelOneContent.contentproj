@@ -36,15 +36,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="island.png">
-      <Name>island</Name>
+    <Compile Include="curses.png">
+      <Name>curses</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="hero.png">
       <Name>hero</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="island.png">
+      <Name>island</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
