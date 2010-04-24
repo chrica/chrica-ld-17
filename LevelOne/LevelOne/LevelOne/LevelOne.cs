@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LevelOne.Rules;
+using LevelOne.Islands;
+using LevelOne.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -23,8 +24,12 @@ namespace LevelOne
         private SpriteBatch _spriteBatch;
 
         private Dictionary<Vector2, Island> _islands;
+        private Hero _hero;
+
         private Texture2D _islandTexture;
+        private Texture2D _heroTexture;
         private bool _newGame = true;
+        private bool _gameActive;
 
         public LevelOne()
         {
@@ -53,6 +58,7 @@ namespace LevelOne
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _islandTexture = Content.Load<Texture2D>(@"island");
+            _heroTexture = Content.Load<Texture2D>(@"hero");
         }
 
         /// <summary>
@@ -75,25 +81,59 @@ namespace LevelOne
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+
+            if(_gameActive)
+            {
+                _hero.Velocity = new Vector2(0.0f);
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Up))
+                {
+                    _hero.Velocity += new Vector2(0.0f, -Hero.Speed);
+                } else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Down))
+                {
+                    _hero.Velocity += new Vector2(0.0f, Hero.Speed);
+                }
+
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Left))
+                {
+                    _hero.Velocity += new Vector2(-Hero.Speed, 0.0f);
+                }
+                else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Right))
+                {
+                    _hero.Velocity += new Vector2(Hero.Speed, 0.0f);
+                }
+
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Space))
+                {
+                    Parallel.ForEach(_islands.Values, island => {
+                          if(_hero.Rect.Intersects(island.Rect))
+                          {
+                              island.Status = Status.Guiding;
+                          }
+                      });
+                }
+
+                _hero.Update(gameTime);
+                Parallel.ForEach(_islands.Values, island => island.Update(gameTime));
+            }
+
+
             if(_newGame)
             {
                 var islands = new List<Island>();
                 var random = new Random();
 
-                Parallel.For(1, 5, x => {
-                    Parallel.For(1, 5, y => {
-                        var island = new Island { Location = new Vector2(x, y) };
-                        island.Postion = island.Location * new Vector2(150.0f, 100.0f);
-                        island.Effects = random.Next(10) % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                        island.Ratio = new Vector2(random.Next(30, 50) / 100.0f, random.Next(40, 50) / 100.0f);
-                        island.Texture = _islandTexture;
-                        islands.Add(island);
-                    });
-                });
+                Parallel.For(1, 5, x => Parallel.For(1, 5, y => islands.Add(new Island(new Vector2(x, y), random, _islandTexture))));
 
                 _islands = islands.ToDictionary(island => island.Location);
+                _hero = new Hero
+                            {
+                                Postion = _islands.TakeRandom(random).Value.Postion,
+                                Texture = _heroTexture,
+                                Ratio = new Vector2(0.6f)
+                            };
 
                 _newGame = false;
+                _gameActive = true;
             }
 
 
@@ -114,6 +154,8 @@ namespace LevelOne
             {
                 island.Draw(_spriteBatch, gameTime);
             }
+
+            _hero.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 

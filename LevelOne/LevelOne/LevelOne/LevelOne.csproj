@@ -92,11 +92,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphics\Sprite.cs" />
+    <Compile Include="Core\RandomHelper.cs" />
+    <Compile Include="Core\Sprite.cs" />
+    <Compile Include="Islands\Hero.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="LevelOne.cs" />
-    <Compile Include="Rules\Island.cs" />
+    <Compile Include="Islands\Island.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

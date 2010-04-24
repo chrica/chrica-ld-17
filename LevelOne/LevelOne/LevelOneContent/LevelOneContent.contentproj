@@ -36,22 +36,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dude.png">
-      <Name>dude</Name>
+    <Compile Include="island.png">
+      <Name>island</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Courier.spritefont">
-      <Name>courier</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="island.png">
-      <Name>island</Name>
+    <Compile Include="hero.png">
+      <Name>hero</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
