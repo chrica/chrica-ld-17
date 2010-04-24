@@ -90,8 +90,8 @@ namespace LevelOne
             GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(dude, new Vector2(50.0f, 50.0f), null, Color.White, 0, Vector2.Zero, 1.0f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "Yo", new Vector2(140.0f, 50.0f), Color.DarkBlue, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+
+
 
             spriteBatch.End();
 
