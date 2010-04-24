@@ -94,7 +94,7 @@ namespace LevelOne
                 _islandMap = new IslandMap(_islandTexture, new Vector2(5.0f));
                 _islandMap.Postion = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height) / 2.0f - _islandMap.Dimensions / 2.0f;
 
-                _hero = new Hero(_heroTexture) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion };
+                _hero = new Hero(_heroTexture) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion + (Island.IslandSpace / 2.0f) };
 
                 _newGame = false;
                 _gameActive = true;

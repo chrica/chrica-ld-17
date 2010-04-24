@@ -12,12 +12,12 @@ namespace LevelOne.Islands
 {
     public class Hero : Sprite
     {
-        public const float Speed = 3.0f;
+        public const float Speed = 5.0f;
 
         public Hero(Texture2D texture)
         {
             Texture = texture;
-            Ratio = new Vector2(0.1f);
+            Ratio = new Vector2(0.1225f);
         }
 
         public override void Update(GameTime gameTime)

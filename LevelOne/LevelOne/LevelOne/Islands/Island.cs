@@ -36,5 +36,10 @@ namespace LevelOne.Islands
                 Ratio = new Vector2(0.15f);
             }
         }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            spriteBatch.Draw(Texture, Postion + ((IslandSpace - Dimensions) / 2.0f), null, Color.White, 0, Vector2.Zero, Ratio, Effects, 0);
+        }
     }
 }
