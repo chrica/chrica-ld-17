@@ -24,11 +24,10 @@ namespace LevelOne
         private SpriteBatch _spriteBatch;
 
         private Hero _hero;
+        private Sprite _cursor;
         private IslandMap _islandMap;
 
-        private Texture2D _islandTexture;
-        private Texture2D _heroTexture;
-
+        private Dictionary<string, Texture2D> _textures;
         private bool _newGame = true;
         private bool _gameActive;
 
@@ -63,8 +62,13 @@ namespace LevelOne
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _islandTexture = Content.Load<Texture2D>(@"island");
-            _heroTexture = Content.Load<Texture2D>(@"hero");
+            _textures = new Dictionary<string, Texture2D>
+                            {
+                                { "island", Content.Load<Texture2D>("island") },
+                                { "hero", Content.Load<Texture2D>("hero") },
+                                { "curses", Content.Load<Texture2D>("curses") },
+                                { "cursor", Content.Load<Texture2D>("cursor") },
+                            };
         }
 
         /// <summary>
@@ -86,15 +90,23 @@ namespace LevelOne
             // Allows the game to exit
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
                 Exit();
+
+            if(_cursor == null)
+            {
+                _cursor = new Sprite { Texture = _textures["cursor"], Ratio = new Vector2(0.75f)};
+            }
+            _cursor.Postion = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+
+
             
             if(_newGame)
             {
                 var random = new Random();
 
-                _islandMap = new IslandMap(_islandTexture, new Vector2(5.0f));
-                _islandMap.Postion = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height) / 2.0f - _islandMap.Dimensions / 2.0f;
+                _islandMap = new IslandMap(_textures["island"], new Vector2(5.0f));
+                _islandMap.Postion = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height) / 2 - _islandMap.Dimensions / 2;
 
-                _hero = new Hero(_heroTexture) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion + (Island.IslandSpace / 2.0f) };
+                _hero = new Hero(_textures["hero"]) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion + (Island.IslandSpace / 2) };
 
                 _newGame = false;
                 _gameActive = true;
@@ -103,7 +115,7 @@ namespace LevelOne
 
             if(_gameActive)
             {
-                _hero.Update(gameTime);
+                _hero.Update(gameTime, _islandMap);
                 _islandMap.Update(gameTime, _hero);
             }
 
@@ -122,6 +134,7 @@ namespace LevelOne
 
             _islandMap.Draw(_spriteBatch, gameTime);
             _hero.Draw(_spriteBatch, gameTime);
+            _cursor.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 

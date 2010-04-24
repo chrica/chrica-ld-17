@@ -27,6 +27,15 @@ namespace LevelOne.Islands
         public Vector2 BoardSize { get; private set; }
         public Dictionary<Vector2, Island> Islands { get; private set; }
 
+        public Rectangle Rect
+        {
+            get
+            {
+
+                return new Rectangle((int)Postion.X, (int)Postion.Y, (int)Dimensions.X, (int)Dimensions.Y);
+            }
+        }
+
         public Vector2 Dimensions
         {
             get
@@ -55,7 +64,7 @@ namespace LevelOne.Islands
                 {
                     if (hero.Rect.Intersects(island.Rect))
                     {
-                        island.Status = Status.Guiding;
+                        island.Status = Status.Warding;
                     }
                 });
             }
@@ -68,6 +77,11 @@ namespace LevelOne.Islands
             foreach (var island in Islands.Values)
             {
                 island.Draw(spriteBatch, gameTime);
+
+                foreach (var curse in island.Curses)
+                {
+                    curse.Draw(spriteBatch, gameTime);
+                }
             }
         }
     }

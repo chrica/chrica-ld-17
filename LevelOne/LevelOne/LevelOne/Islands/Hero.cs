@@ -12,7 +12,7 @@ namespace LevelOne.Islands
 {
     public class Hero : Sprite
     {
-        public const float Speed = 5.0f;
+        public const float Speed = 7.0f;
 
         public Hero(Texture2D texture)
         {
@@ -20,25 +20,21 @@ namespace LevelOne.Islands
             Ratio = new Vector2(0.1225f);
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, IslandMap islandMap)
         {
             Velocity = new Vector2(0.0f);
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Up))
-            {
-                Velocity += new Vector2(0.0f, -Speed);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Down))
-            {
-                Velocity += new Vector2(0.0f, Speed);
-            }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Left))
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                (islandMap.Rect.Contains(Mouse.GetState().X, Mouse.GetState().Y) ||
+                islandMap.Rect.Contains((int)Postion.X, (int)Postion.Y)))
             {
-                Velocity += new Vector2(-Speed, 0.0f);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Right))
-            {
-                Velocity += new Vector2(Speed, 0.0f);
+                Vector2 mouse = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                float distance = Vector2.Distance(Postion, mouse);
+                if (distance > Speed)
+                {
+                    Vector2 rightDistance = mouse - Postion;
+                    Velocity = new Vector2(rightDistance.X / distance * Speed, rightDistance.Y / distance * Speed);
+                }
             }
 
             base.Update(gameTime);

@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Core\RandomHelper.cs" />
     <Compile Include="Core\Sprite.cs" />
+    <Compile Include="Islands\Curse.cs" />
     <Compile Include="Islands\Hero.cs" />
     <Compile Include="Islands\IslandMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

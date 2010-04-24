@@ -6,8 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LevelOne.Islands
 {
-    public enum Status { Normal, Guiding, Hexxed }
-    public enum Curse { None, Red, Yellow, Purple }
+    public enum Status { Normal, Warding, Hexxing }
 
     public class Island : Sprite
     {
@@ -31,15 +30,11 @@ namespace LevelOne.Islands
 
         public override void Update(GameTime gameTime)
         {
-            if(Status == Status.Guiding)
-            {
-                Ratio = new Vector2(0.15f);
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Postion + ((IslandSpace - Dimensions) / 2.0f), null, Color.White, 0, Vector2.Zero, Ratio, Effects, 0);
+            spriteBatch.Draw(Texture, Postion + (IslandSpace - Dimensions) / 2, null, Color.White, 0, Vector2.Zero, Ratio, Effects, 0);
         }
     }
 }
