@@ -41,9 +41,6 @@ namespace LevelOne
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 1024;
-#if !DEBUG
-            _graphics.IsFullScreen = true;
-#endif
             Content.RootDirectory = "Content";
         }
 
@@ -244,7 +241,7 @@ namespace LevelOne
                     _islandMap.Islands.Count(island => island.Value.Status == Status.Warding),
                     (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) / 60.0d),
                     (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) % 60.0d),
-                     (_islandMap.Islands.Count(island => island.Value.Status == Status.Warding) * 15000) - (_islandMap.WinTime - _islandMap.StartTime)
+                     (_islandMap.Islands.Count(island => island.Value.Status != Status.Warding) * 15000) - (_islandMap.WinTime - _islandMap.StartTime)
                     ), center - new Vector2(330.0f, 75.0f), Color.Olive);
             }
 
