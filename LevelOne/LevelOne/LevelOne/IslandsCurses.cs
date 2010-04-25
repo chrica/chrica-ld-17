@@ -208,7 +208,8 @@ namespace LevelOne
 
             if (_gameActive || _showWin)
             {
-                //hud
+                //Lets draw some hud!!
+                //curse status
                 Vector2 cursesStatus = new Vector2(0.0f, 25.0f);
                 foreach (var curse in _islandMap.Curses)
                 {
@@ -219,6 +220,13 @@ namespace LevelOne
 
                 }
 
+                double timeLeft = (_islandMap.WinTime > 0.0 ? _islandMap.WinTime : gameTime.TotalGameTime.TotalMilliseconds) - _islandMap.StartTime;
+                _spriteBatch.DrawString(_font, string.Format("{0:00}:{1:00}",
+                    (int)((timeLeft / 1000.0d) / 60.0d),
+                    (int)(timeLeft / 1000.0d) % 60.0d),
+                    new Vector2(450.0f, 15.0f), Color.Olive);
+
+                //tutorial
                 _spriteBatch.DrawString(_titleFont, "?", new Vector2(Window.ClientBounds.Width - 50.0f, -25.0f), Color.Olive);
 
                 _islandMap.Draw(_spriteBatch, gameTime);
@@ -246,7 +254,7 @@ namespace LevelOne
                 }.Draw(_spriteBatch, gameTime);
 
                 _spriteBatch.DrawString(_font, string.Format(
-                    "You Win! way to capture those things...\n Masks: {0}, Time: {1}:{2}, Points: {3:0}",
+                    "You Win! way to capture those things...\n Masks: {0}, Time: {1:00}:{2:00}, Score: {3:0}",
                     _islandMap.Islands.Count(island => island.Value.Status == Status.Warding),
                     (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) / 60.0d),
                     (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) % 60.0d),
