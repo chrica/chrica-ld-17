@@ -96,22 +96,25 @@ namespace LevelOne.Rules
 
         public override void Update(GameTime gameTime)
         {
-            if (!Rect.Contains(Haunt.Rect.Center.X, Haunt.Rect.Center.Y))
+            if (Haunt != null)
             {
-                if (_flying)
+                if (!Rect.Contains(Haunt.Rect.Center.X, Haunt.Rect.Center.Y))
                 {
-                    double ratio = Math.Min(gameTime.TotalGameTime.TotalMilliseconds - _flyStart, _flyTime) / _flyTime;
-                    Postion = Vector2.Lerp(Postion, new Vector2(Haunt.Rect.Center.X, Haunt.Rect.Center.Y), Convert.ToSingle(ratio));
+                    if (_flying)
+                    {
+                        double ratio = Math.Min(gameTime.TotalGameTime.TotalMilliseconds - _flyStart, _flyTime) / _flyTime;
+                        Postion = Vector2.Lerp(Postion, new Vector2(Haunt.Rect.Center.X, Haunt.Rect.Center.Y), Convert.ToSingle(ratio));
+                    }
+                    else
+                    {
+                        _flying = true;
+                        _flyStart = gameTime.TotalGameTime.TotalMilliseconds;
+                    }
                 }
                 else
                 {
-                    _flying = true;
-                    _flyStart = gameTime.TotalGameTime.TotalMilliseconds;
+                    _flying = false;
                 }
-            }
-            else
-            {
-                _flying = false;
             }
         }
 

@@ -24,7 +24,7 @@ namespace LevelOne.Rules
 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                 (PlayableArea.Contains(Mouse.GetState().X, Mouse.GetState().Y) || PlayableArea.Contains((int)Postion.X, (int)Postion.Y)) &&
-                ClickableArea.Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                new Rectangle(0, 0,ClickableArea.Width, ClickableArea.Height).Contains(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 Vector2 mouse = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                 float distance = Vector2.Distance(Postion, mouse);

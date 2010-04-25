@@ -80,6 +80,7 @@ namespace LevelOne
                                 { "curse-full", Content.Load<Texture2D>("curse-full") },
                                 { "ward-full", Content.Load<Texture2D>("ward-full") },
                                 { "tute", Content.Load<Texture2D>("tute") },
+                                { "dialog", Content.Load<Texture2D>("dialog") },
                             };
         }
 
@@ -191,6 +192,15 @@ namespace LevelOne
 
             if (_gameActive)
             {
+                Vector2 cursesStatus = new Vector2(0.0f, 25.0f);
+                foreach (var curse in _islandMap.Curses)
+                {
+                    new Curse(0, curse.Type)
+                        {
+                            Postion = cursesStatus += new Vector2(Curse.CurseDimensions.X, 0.0f)
+                    }.Draw(_spriteBatch, gameTime);
+
+                }
                 _islandMap.Draw(_spriteBatch, gameTime);
             }
 

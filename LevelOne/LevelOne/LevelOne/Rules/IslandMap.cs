@@ -11,6 +11,8 @@ namespace LevelOne.Rules
     public class IslandMap
     {
         public double StartTime { get; private set; }
+        public double WinTime { get; private set; }
+        public bool Won { get; private set; }
         public Vector2 Position { get; private set; }
         public Vector2 BoardSize { get; private set; }
         public Dictionary<Vector2, Island> Islands { get; private set; }
@@ -68,7 +70,12 @@ namespace LevelOne.Rules
         {
             if (StartTime < 1.0f)
                 StartTime = gameTime.TotalGameTime.Milliseconds;
-                
+            if(!Curses.Any() && !Won)
+            {
+                Won = true;
+                WinTime = gameTime.TotalGameTime.Milliseconds;
+            }
+
             var random = new Random();
             var herosIsland = Islands.Values.SingleOrDefault(island => island.Rect.Contains(Hero.Rect.Center));
             if (herosIsland != null)
@@ -86,12 +93,8 @@ namespace LevelOne.Rules
                         Curses.Remove(localCurse);
                     }
                 }
-                Hero.Swimming = false;
             }
-            else
-            {
-                Hero.Swimming = true;
-            }
+
 
             if (Mouse.GetState().RightButton == ButtonState.Pressed && herosIsland != null && herosIsland.Status != Status.Warding)
             {
