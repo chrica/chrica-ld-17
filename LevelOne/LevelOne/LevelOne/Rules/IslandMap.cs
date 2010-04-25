@@ -4,6 +4,7 @@ using System.Linq;
 using LevelOne.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace LevelOne.Rules
 {
@@ -57,18 +58,53 @@ namespace LevelOne.Rules
         public void Update(GameTime gameTime)
         {
             var random = new Random();
-            Hero.Update(gameTime);
 
             var herosIsland = Islands.Values.SingleOrDefault(island => island.Rect.Contains(Hero.Rect.Center));
+            if (herosIsland != null)
+            {
+                var localCurses = Curses.Where(c => c.Haunt.Location == herosIsland.Location).ToList();
+                foreach (var localCurse in localCurses)
+                {
+                    var availableHaunts = GetAvailableHaunts(localCurse);
+                    if (availableHaunts.Any())
+                    {
+                        localCurse.Haunt = availableHaunts.TakeRandom(random);
+                    }
+                    else
+                    {
+                        Curses.Remove(localCurse);
+                    }
+                }
+                Hero.Swimming = false;
+            }
+            else
+            {
+                Hero.Swimming = true;
+            }
 
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && herosIsland != null && herosIsland.Status != Status.Warding)
+            {
+                herosIsland.Status = Status.Warding;
 
+                var nearbyCurses = CurseType.Purple.GetDirections()
+                    .Where(direction => Islands.ContainsKey(herosIsland.Location + direction))
+                    .SelectMany(direction => Curses.Where(curse => curse.Haunt.Location == herosIsland.Location + direction));
+
+                foreach (var nearbyCurse in nearbyCurses)
+                {
+                    var availableHaunts = GetAvailableHaunts(nearbyCurse);
+                    if (availableHaunts.Any())
+                    {
+                        nearbyCurse.Haunt = availableHaunts.TakeRandom(random);
+                    }
+                }
+            }
+
+            Hero.Update(gameTime);
 
             foreach (var curse in Curses)
             {
-                if (herosIsland != null && herosIsland.Location == curse.Haunt.Location)
-                {
-                    MoveCurse(curse, random);
-                }
+                curse.Update(gameTime);
             }
         }
 
@@ -87,10 +123,10 @@ namespace LevelOne.Rules
             }
         }
 
-        public void MoveCurse(Curse curse, Random random)
+        public List<Island> GetAvailableHaunts(Curse curse)
         {
-            var availableHaunts = curse.Type.GetDirections()
-                .SelectMany(direction => AvailableIslandsInDirection(curse.Haunt.Location + direction, direction, curse.Type.GetMoves(), location =>
+            return curse.Type.GetDirections()
+                .SelectMany(direction => GetAvailableHauntsInDirection(curse.Haunt.Location + direction, direction, curse.Type.GetMoves(), location =>
                 {
                     if (!Islands.ContainsKey(location))
                         return false;
@@ -98,25 +134,18 @@ namespace LevelOne.Rules
                     if (Islands[location].Status == Status.Warding)
                         return false;
 
-                    return true;
-                }).Select(location => Islands[location]));
+                    if (Curses.Any(otherCurse => otherCurse.Type != curse.Type && otherCurse.Haunt.Location == location))
+                        return false;
 
-            if (availableHaunts.Any())
-            {
-                curse.Haunt = availableHaunts.TakeRandom(random);
-                curse.Postion = curse.Haunt.Postion;
-            }
-            else
-            {
-                Curses.Remove(curse);
-            }
+                    return true;
+                }).Select(location => Islands[location])).ToList();
         }
 
-        public List<Vector2> AvailableIslandsInDirection(Vector2 location, Vector2 direction, int movesLeft, Func<Vector2, bool> isValidIsland)
+        public List<Vector2> GetAvailableHauntsInDirection(Vector2 location, Vector2 direction, int movesLeft, Func<Vector2, bool> isValidIsland)
         {
             if (movesLeft > 0 && isValidIsland.Invoke(location))
             {
-                var availableIslands = AvailableIslandsInDirection(location + direction, direction, --movesLeft, isValidIsland);
+                var availableIslands = GetAvailableHauntsInDirection(location + direction, direction, --movesLeft, isValidIsland);
                 availableIslands.Add(location);
                 return availableIslands;
             }

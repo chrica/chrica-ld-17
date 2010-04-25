@@ -6,14 +6,14 @@ namespace LevelOne.Rules
 {
     public class Hero : Sprite
     {
-        public const float Speed = 7.0f;
+        public const float Speed = 10.0f;
         public Rectangle PlayableArea { get; private set; }
         public Rectangle ClickableArea { get; private set; }
+        public bool Swimming { get; set; }
 
         public Hero(Rectangle playableArea, Rectangle clickableArea)
         {
             Texture = IslandsCurses.Textures["hero"];
-            Ratio = new Vector2(0.1225f);
             PlayableArea = playableArea;
             ClickableArea = clickableArea;
         }
@@ -34,6 +34,8 @@ namespace LevelOne.Rules
                     Velocity = new Vector2(rightDistance.X / distance * Speed, rightDistance.Y / distance * Speed);
                 }
             }
+
+            //Texture = Swimming ? IslandsCurses.Textures["ward"] : IslandsCurses.Textures["hero"];
 
             base.Update(gameTime);
         }

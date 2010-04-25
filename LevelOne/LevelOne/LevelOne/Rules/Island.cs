@@ -24,5 +24,21 @@ namespace LevelOne.Rules
 
             Status = Status.Normal;
         }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            base.Draw(spriteBatch, gameTime);
+
+            if (Status == Status.Warding)
+            {
+                var ward = new Sprite
+                               {
+                                   Ratio = new Vector2(0.75f),
+                                   Texture = IslandsCurses.Textures["ward"],
+                                   Postion = Center + new Vector2(0.0f, -50.0f)
+                               };
+                ward.Draw(spriteBatch, gameTime);
+            }
+        }
     }
 }

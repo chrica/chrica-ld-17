@@ -7,18 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LevelOne.Rules
 {
-     public static class CurseHelper
-     {
-         public static List<Vector2> GetDirections(this CurseType curse)
-         {
-             switch (curse)
-             {
-                 case CurseType.Red:
-                     return new List<Vector2> {new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(0, 1)};
-                 case CurseType.Green:
-                     return new List<Vector2> {new Vector2(1), new Vector2(-1), new Vector2(1, -1), new Vector2(-1, 1)};
-                 case CurseType.Purple:
-                     return new List<Vector2>
+    public static class CurseHelper
+    {
+        public static List<Vector2> GetDirections(this CurseType curse)
+        {
+            switch (curse)
+            {
+                case CurseType.Red:
+                    return new List<Vector2> { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(0, 1) };
+                case CurseType.Green:
+                    return new List<Vector2> { new Vector2(1), new Vector2(-1), new Vector2(1, -1), new Vector2(-1, 1) };
+                case CurseType.Purple:
+                    return new List<Vector2>
                                 {
                                     new Vector2(1, 0),
                                     new Vector2(-1, 0),
@@ -29,37 +29,37 @@ namespace LevelOne.Rules
                                     new Vector2(1, -1),
                                     new Vector2(-1, 1)
                                 };
-                 default:
-                     return new List<Vector2>();
-             }
-         }
+                default:
+                    return new List<Vector2>();
+            }
+        }
 
-         public static int GetOffset(this CurseType curse)
-         {
-             switch (curse)
-             {
-                 case CurseType.Green:
-                     return 300;
-                 case CurseType.Purple:
-                     return 600;
-                 default:
-                     return 0;
-             }
-         }
+        public static int GetOffset(this CurseType curse)
+        {
+            switch (curse)
+            {
+                case CurseType.Green:
+                    return 60;
+                case CurseType.Purple:
+                    return 120;
+                default:
+                    return 0;
+            }
+        }
 
-         public static int GetMoves(this CurseType curse)
-         {
-             switch (curse)
-             {
-                 case CurseType.Red:
-                     return 3;
-                 case CurseType.Green:
-                     return 2;
-                 default:
-                     return 1;
-             }
-         }
-     }
+        public static int GetMoves(this CurseType curse)
+        {
+            switch (curse)
+            {
+                case CurseType.Red:
+                    return 3;
+                case CurseType.Green:
+                    return 3;
+                default:
+                    return 1;
+            }
+        }
+    }
 
     public enum CurseType { Red, Green, Purple }
 
@@ -67,7 +67,10 @@ namespace LevelOne.Rules
     {
         public int Id { get; private set; }
         public const float Speed = 10.0f;
-        public static readonly Vector2 CurseDimensions = new Vector2(300.0f, 225.0f);
+        public static readonly Vector2 CurseDimensions = new Vector2(60.0f, 45.0f);
+        private const double _flyTime = 1000.0d;
+        private bool _flying;
+        private double _flyStart;
 
         public Island Haunt { get; set; }
 
@@ -80,9 +83,38 @@ namespace LevelOne.Rules
             Id = id;
             Type = type;
             Texture = IslandsCurses.Textures["curses"];
-            Ratio = new Vector2(0.2f);
         }
-       
+
+        public override Rectangle Rect
+        {
+            get
+            {
+
+                return new Rectangle((int)Postion.X, (int)Postion.Y, (int)CurseDimensions.X, (int)CurseDimensions.Y);
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (!Rect.Contains(Haunt.Rect.Center.X, Haunt.Rect.Center.Y))
+            {
+                if (_flying)
+                {
+                    double ratio = Math.Min(gameTime.TotalGameTime.TotalMilliseconds - _flyStart, _flyTime) / _flyTime;
+                    Postion = Vector2.Lerp(Postion, new Vector2(Haunt.Rect.Center.X, Haunt.Rect.Center.Y), Convert.ToSingle(ratio));
+                }
+                else
+                {
+                    _flying = true;
+                    _flyStart = gameTime.TotalGameTime.TotalMilliseconds;
+                }
+            }
+            else
+            {
+                _flying = false;
+            }
+        }
+
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

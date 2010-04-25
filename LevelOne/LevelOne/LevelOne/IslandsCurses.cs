@@ -68,6 +68,7 @@ namespace LevelOne
                                 { "hero", Content.Load<Texture2D>("hero") },
                                 { "curses", Content.Load<Texture2D>("curses") },
                                 { "cursor", Content.Load<Texture2D>("cursor") },
+                                { "ward", Content.Load<Texture2D>("ward") },
                             };
         }
 
@@ -99,7 +100,7 @@ namespace LevelOne
 
             if(_newGame)
             {
-                var boardSize = new Vector2(5.0f);
+                var boardSize = new Vector2(6.0f, 5.0f);
 
                 _islandMap = new IslandMap(boardSize, Window.ClientBounds);
 
@@ -122,7 +123,7 @@ namespace LevelOne
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(new Color(155, 230, 255));
 
             _spriteBatch.Begin();
 

@@ -8,6 +8,8 @@ namespace LevelOne.Core
     {
         public Texture2D Texture { get; set; }
         public Vector2 Postion { get; set; }
+
+
         public Vector2 Ratio { get; set; }
         public SpriteEffects Effects { get; set; }
         public Vector2 Velocity { get; set; }
@@ -20,7 +22,15 @@ namespace LevelOne.Core
             }
         }
 
-        public Rectangle Rect
+        public Vector2 Center
+        {
+            get
+            {
+                return Postion + (Dimensions/2);
+            }
+        }
+
+        public virtual Rectangle Rect
         {
             get
             {
