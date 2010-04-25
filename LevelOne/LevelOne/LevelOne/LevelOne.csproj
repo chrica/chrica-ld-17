@@ -94,13 +94,13 @@
   <ItemGroup>
     <Compile Include="Core\RandomHelper.cs" />
     <Compile Include="Core\Sprite.cs" />
-    <Compile Include="Islands\Curse.cs" />
-    <Compile Include="Islands\Hero.cs" />
-    <Compile Include="Islands\IslandMap.cs" />
+    <Compile Include="Rules\Curse.cs" />
+    <Compile Include="Rules\Hero.cs" />
+    <Compile Include="Rules\IslandMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="LevelOne.cs" />
-    <Compile Include="Islands\Island.cs" />
+    <Compile Include="IslandsCurses.cs" />
+    <Compile Include="Rules\Island.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

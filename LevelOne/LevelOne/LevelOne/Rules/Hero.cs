@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LevelOne.Core;
+﻿using LevelOne.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace LevelOne.Islands
+namespace LevelOne.Rules
 {
     public class Hero : Sprite
     {
         public const float Speed = 7.0f;
+        public Rectangle PlayableArea { get; private set; }
+        public Rectangle ClickableArea { get; private set; }
 
-        public Hero(Texture2D texture)
+        public Hero(Rectangle playableArea, Rectangle clickableArea)
         {
-            Texture = texture;
+            Texture = IslandsCurses.Textures["hero"];
             Ratio = new Vector2(0.1225f);
+            PlayableArea = playableArea;
+            ClickableArea = clickableArea;
         }
 
-        public void Update(GameTime gameTime, IslandMap islandMap)
+        public override void Update(GameTime gameTime)
         {
             Velocity = new Vector2(0.0f);
 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                (islandMap.Rect.Contains(Mouse.GetState().X, Mouse.GetState().Y) ||
-                islandMap.Rect.Contains((int)Postion.X, (int)Postion.Y)))
+                (PlayableArea.Contains(Mouse.GetState().X, Mouse.GetState().Y) || PlayableArea.Contains((int)Postion.X, (int)Postion.Y)) &&
+                ClickableArea.Contains(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 Vector2 mouse = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                 float distance = Vector2.Distance(Postion, mouse);

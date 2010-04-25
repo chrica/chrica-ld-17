@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LevelOne.Islands;
 using LevelOne.Core;
+using LevelOne.Rules;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -18,26 +18,26 @@ namespace LevelOne
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class LevelOne : Microsoft.Xna.Framework.Game
+    public class IslandsCurses : Microsoft.Xna.Framework.Game
     {
+        public static Dictionary<string, Texture2D> Textures { get; private set; }
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Hero _hero;
-        private Sprite _cursor;
         private IslandMap _islandMap;
 
-        private Dictionary<string, Texture2D> _textures;
+        private Sprite _cursor;
+
         private bool _newGame = true;
         private bool _gameActive;
 
-        public LevelOne()
+        public IslandsCurses()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 1024;
             #if !DEBUG
-            graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = true;
             #endif
             Content.RootDirectory = "Content";
         }
@@ -62,7 +62,7 @@ namespace LevelOne
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _textures = new Dictionary<string, Texture2D>
+            Textures = new Dictionary<string, Texture2D>
                             {
                                 { "island", Content.Load<Texture2D>("island") },
                                 { "hero", Content.Load<Texture2D>("hero") },
@@ -93,20 +93,15 @@ namespace LevelOne
 
             if(_cursor == null)
             {
-                _cursor = new Sprite { Texture = _textures["cursor"], Ratio = new Vector2(0.75f)};
+                _cursor = new Sprite { Texture = Textures["cursor"], Ratio = new Vector2(0.75f)};
             }
             _cursor.Postion = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
-
-            
             if(_newGame)
             {
-                var random = new Random();
+                var boardSize = new Vector2(5.0f);
 
-                _islandMap = new IslandMap(_textures["island"], new Vector2(5.0f));
-                _islandMap.Postion = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height) / 2 - _islandMap.Dimensions / 2;
-
-                _hero = new Hero(_textures["hero"]) { Postion = _islandMap.Islands.TakeRandom(random).Value.Postion + (Island.IslandSpace / 2) };
+                _islandMap = new IslandMap(boardSize, Window.ClientBounds);
 
                 _newGame = false;
                 _gameActive = true;
@@ -115,8 +110,7 @@ namespace LevelOne
 
             if(_gameActive)
             {
-                _hero.Update(gameTime, _islandMap);
-                _islandMap.Update(gameTime, _hero);
+                _islandMap.Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -133,7 +127,6 @@ namespace LevelOne
             _spriteBatch.Begin();
 
             _islandMap.Draw(_spriteBatch, gameTime);
-            _hero.Draw(_spriteBatch, gameTime);
             _cursor.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();

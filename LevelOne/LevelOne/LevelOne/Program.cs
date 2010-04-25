@@ -10,7 +10,7 @@ namespace LevelOne
         /// </summary>
         static void Main(string[] args)
         {
-            using (LevelOne game = new LevelOne())
+            using (IslandsCurses game = new IslandsCurses())
             {
                 game.Run();
             }
