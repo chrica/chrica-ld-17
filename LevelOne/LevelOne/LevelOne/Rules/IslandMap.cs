@@ -10,6 +10,7 @@ namespace LevelOne.Rules
 {
     public class IslandMap
     {
+        public double StartTime { get; private set; }
         public Vector2 Position { get; private set; }
         public Vector2 BoardSize { get; private set; }
         public Dictionary<Vector2, Island> Islands { get; private set; }
@@ -48,8 +49,16 @@ namespace LevelOne.Rules
             Curses = new List<Curse>();
             for (int curse = 0; curse < (BoardSize.X + BoardSize.Y) / 2; curse++)
             {
-                var island = Islands.TakeRandom(random).Value;
-                Curses.Add(new Curse(curse, random) { Postion = island.Postion, Haunt = island });
+                bool unique = false;
+                do
+                {
+                    var island = Islands.TakeRandom(random).Value;
+                    if (!Curses.Any(otherCurse => otherCurse.Haunt.Location == island.Location))
+                    {
+                        Curses.Add(new Curse(curse, random) {Postion = island.Postion, Haunt = island});
+                        unique = true;
+                    }
+                } while (!unique);
             }
 
             Hero = new Hero(Rect, bounds) { Postion = Islands.TakeRandom(random).Value.Postion };
@@ -57,8 +66,10 @@ namespace LevelOne.Rules
 
         public void Update(GameTime gameTime)
         {
+            if (StartTime < 1.0f)
+                StartTime = gameTime.TotalGameTime.Milliseconds;
+                
             var random = new Random();
-
             var herosIsland = Islands.Values.SingleOrDefault(island => island.Rect.Contains(Hero.Rect.Center));
             if (herosIsland != null)
             {
@@ -134,7 +145,7 @@ namespace LevelOne.Rules
                     if (Islands[location].Status == Status.Warding)
                         return false;
 
-                    if (Curses.Any(otherCurse => otherCurse.Type != curse.Type && otherCurse.Haunt.Location == location))
+                    if (Curses.Any(otherCurse => otherCurse.Haunt.Location == location))
                         return false;
 
                     return true;
