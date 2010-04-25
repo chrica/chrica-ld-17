@@ -69,11 +69,11 @@ namespace LevelOne.Rules
         public void Update(GameTime gameTime)
         {
             if (StartTime < 1.0f)
-                StartTime = gameTime.TotalGameTime.Milliseconds;
+                StartTime = gameTime.TotalGameTime.TotalMilliseconds;
             if(!Curses.Any() && !Won)
             {
                 Won = true;
-                WinTime = gameTime.TotalGameTime.Milliseconds;
+                WinTime = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
             var random = new Random();

@@ -34,6 +34,7 @@ namespace LevelOne
         private bool _newGame;
         private bool _gameActive;
         private bool _showTutorial;
+        private bool _showWin;
 
         public IslandsCurses()
         {
@@ -113,6 +114,11 @@ namespace LevelOne
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 _showTutorial = false;
+                if (_showWin && (gameTime.TotalGameTime.TotalMilliseconds - _islandMap.WinTime) > 5000.0f)
+                {
+                    _showWin = false;
+                    _loadscreenActive = true;
+                }
             }
 
             if (_loadscreenActive)
@@ -145,7 +151,15 @@ namespace LevelOne
 
             if (_gameActive)
             {
-                _islandMap.Update(gameTime);
+                if (_islandMap.Won)
+                {
+                    _gameActive = false;
+                    _showWin = true;
+                }
+                else
+                {
+                    _islandMap.Update(gameTime);
+                }
             }
 
             base.Update(gameTime);
@@ -190,7 +204,7 @@ namespace LevelOne
                     }.Draw(_spriteBatch, gameTime);
             }
 
-            if (_gameActive)
+            if (_gameActive || _showWin)
             {
                 Vector2 cursesStatus = new Vector2(0.0f, 25.0f);
                 foreach (var curse in _islandMap.Curses)
@@ -213,6 +227,25 @@ namespace LevelOne
                     Ratio = new Vector2(1.0f),
                     Postion = center - new Vector2(400.0f, 300.0f)
                 }.Draw(_spriteBatch, gameTime);
+            }
+
+            if (_showWin)
+            {
+                Vector2 center = new Vector2(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+                new Sprite
+                {
+                    Texture = Textures["dialog"],
+                    Ratio = new Vector2(1.0f),
+                    Postion = center - new Vector2(400.0f, 100.0f)
+                }.Draw(_spriteBatch, gameTime);
+
+                _spriteBatch.DrawString(_font, string.Format(
+                    "You Win! way to capture those things...\n Masks: {0}, Time: {1}:{2}, Points: {3:0}",
+                    _islandMap.Islands.Count(island => island.Value.Status == Status.Warding),
+                    (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) / 60.0d),
+                    (int)(((_islandMap.WinTime - _islandMap.StartTime) / 1000.0d) % 60.0d),
+                     (_islandMap.Islands.Count(island => island.Value.Status == Status.Warding) * 15000) - (_islandMap.WinTime - _islandMap.StartTime)
+                    ), center - new Vector2(330.0f, 75.0f), Color.Olive);
             }
 
             _cursor.Draw(_spriteBatch, gameTime);

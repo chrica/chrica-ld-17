@@ -35,8 +35,6 @@ namespace LevelOne.Rules
                 }
             }
 
-            //Texture = Swimming ? IslandsCurses.Textures["ward"] : IslandsCurses.Textures["hero"];
-
             base.Update(gameTime);
         }
     }
