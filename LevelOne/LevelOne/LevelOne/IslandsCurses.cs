@@ -156,6 +156,11 @@ namespace LevelOne
                 else
                 {
                     _islandMap.Update(gameTime);
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                        new Rectangle(Window.ClientBounds.Width - (int)60.0f, 0, 60, 60).Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                    {
+                        _showTutorial = true;
+                    }
                 }
             }
 
@@ -179,7 +184,7 @@ namespace LevelOne
 
                 _spriteBatch.DrawString(_titleFont, "Islands!?! Curses!?!", (center * new Vector2(1.0f, 0.0f)) + new Vector2(-350.0f, 25.0f), Color.Olive);
                 _spriteBatch.DrawString(_font, "Play!", center + new Vector2(-30.0f, 165.0f), Color.Olive);
-                _spriteBatch.DrawString(_font, "Play?", center + new Vector2(-30.0f, 225.0f), Color.Olive);
+                _spriteBatch.DrawString(_font, "How to play!", center + new Vector2(-100.0f, 225.0f), Color.Olive);
 
                 new Sprite
                     {
@@ -203,6 +208,7 @@ namespace LevelOne
 
             if (_gameActive || _showWin)
             {
+                //hud
                 Vector2 cursesStatus = new Vector2(0.0f, 25.0f);
                 foreach (var curse in _islandMap.Curses)
                 {
@@ -212,6 +218,9 @@ namespace LevelOne
                     }.Draw(_spriteBatch, gameTime);
 
                 }
+
+                _spriteBatch.DrawString(_titleFont, "?", new Vector2(Window.ClientBounds.Width - 50.0f, -25.0f), Color.Olive);
+
                 _islandMap.Draw(_spriteBatch, gameTime);
             }
 
